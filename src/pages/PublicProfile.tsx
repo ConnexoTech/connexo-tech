@@ -1,31 +1,34 @@
 import { useEffect } from "react";
-import { useProfile } from "@/contexts/ProfileContext";
+import { useParams, useNavigate } from "react-router-dom";
+import { usePublicProfile } from "@/hooks/usePublicProfile";
+import { useAuth } from "@/contexts/AuthContext";
 import { ExternalLink, Mail, Phone, MapPin, ArrowLeft, Save, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useParams } from "react-router-dom";
 import { Footer } from "@/components/Footer";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useToast } from "@/hooks/use-toast";
 import * as LucideIcons from "lucide-react";
 
 const PublicProfile = () => {
-  const { profile } = useProfile();
-  const { appearance, links, contactData } = profile;
-  const navigate = useNavigate();
   const { username } = useParams();
-  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const { profile, themeSettings, links, loading, error } = usePublicProfile(username || "");
 
-  // Check if user is viewing their own profile (has session)
-  const isOwnProfile = username === profile.username;
+  // Check if user is viewing their own profile
+  const isOwnProfile = user && profile && username === profile.username;
 
   // Update page title dynamically
   useEffect(() => {
-    const { title, bio } = appearance;
-    const pageTitle = bio ? `${title} - ${bio}` : title;
-    document.title = pageTitle;
-  }, [appearance.title, appearance.bio]);
+    if (profile) {
+      const pageTitle = profile.bio ? `${profile.title} - ${profile.bio}` : profile.title || "Profile";
+      document.title = pageTitle;
+    }
+  }, [profile]);
 
   const getButtonRadius = () => {
-    switch (appearance.buttonStyle) {
+    if (!themeSettings) return "rounded-lg";
+    switch (themeSettings.button_style) {
       case "rectangular":
         return "rounded-none";
       case "rounded":
@@ -42,30 +45,20 @@ const PublicProfile = () => {
     return Icon ? <Icon className="h-5 w-5" /> : <ExternalLink className="h-5 w-5" />;
   };
 
-  const backgroundStyle =
-    appearance.bgType === "color"
-      ? { backgroundColor: appearance.bgColor }
-      : {
-          backgroundImage: `url(${appearance.bgImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        };
-
   const downloadVCard = () => {
+    if (!profile) return;
+    
     const vcard = `BEGIN:VCARD
 VERSION:3.0
-FN:${appearance.title}
-EMAIL:${contactData.email || ''}
-TEL:${contactData.phone || ''}
-ADR:;;${contactData.location || ''};;;;
-NOTE:${appearance.bio || ''}
+FN:${profile.title || ""}
+NOTE:${profile.bio || ""}
 END:VCARD`;
 
-    const blob = new Blob([vcard], { type: 'text/vcard' });
+    const blob = new Blob([vcard], { type: "text/vcard" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${appearance.title.replace(/\s+/g, '_')}_contact.vcf`;
+    a.download = `${(profile.title || "profile").replace(/\s+/g, "_")}_contact.vcf`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -76,31 +69,56 @@ END:VCARD`;
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${appearance.title} - ${appearance.bio}`,
-          text: `Conoce el perfil de ${appearance.title}`,
+          title: `${profile?.title || "Profile"} - ${profile?.bio || ""}`,
+          text: `Check out ${profile?.title || "this profile"}`,
           url: currentUrl,
         });
       } catch (err) {
-        // Si el usuario cancela el compartir, no hacemos nada
-        console.log('Compartir cancelado');
+        // User cancelled sharing
       }
     } else {
-      // Fallback: copiar al portapapeles
       try {
         await navigator.clipboard.writeText(currentUrl);
-        // Aquí podrías mostrar una notificación de que se copió el enlace
-        console.log('Enlace copiado al portapapeles');
+        toast({
+          title: "Link copied",
+          description: "Profile link copied to clipboard",
+        });
       } catch (err) {
-        console.error('Error al copiar el enlace:', err);
+        console.error("Error copying link:", err);
       }
     }
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <p className="text-muted-foreground">Loading profile...</p>
+      </div>
+    );
+  }
+
+  // Error or not found state
+  if (error || !profile || !themeSettings) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
+        <h1 className="text-2xl font-bold mb-4">Profile not found</h1>
+        <Button onClick={() => navigate("/")}>Go Home</Button>
+      </div>
+    );
+  }
+
+  const backgroundStyle =
+    themeSettings.bg_type === "color"
+      ? { backgroundColor: themeSettings.bg_color }
+      : {
+          backgroundImage: `url(${themeSettings.bg_image_url})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        };
+
   return (
-    <div
-      className="min-h-screen w-full flex flex-col"
-      style={backgroundStyle}
-    >
+    <div className="min-h-screen w-full flex flex-col" style={backgroundStyle}>
       {/* Back to Dashboard Button */}
       {isOwnProfile && (
         <div className="w-full p-4">
@@ -121,28 +139,25 @@ END:VCARD`;
         <div className="w-full max-w-2xl">
           <div className="space-y-6 sm:space-y-8">
             {/* Cover Image with Profile Image Overlay */}
-            <div className="relative w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden">
-              {appearance.coverImage && (
+            {profile.cover_image_url && (
+              <div className="relative w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden">
                 <img
-                  src={appearance.coverImage}
+                  src={profile.cover_image_url}
                   alt="Cover"
                   className="w-full h-full object-cover"
                 />
-              )}
-
-              {/* Profile Image Overlay */}
-              <div className="absolute -bottom-12 sm:-bottom-16 md:-bottom-20 left-1/2 transform -translate-x-1/2">
-                <div className="relative">
-                  {appearance.profileImage && (
+                {/* Profile Image Overlay */}
+                {profile.profile_picture_url && (
+                  <div className="absolute -bottom-12 sm:-bottom-16 md:-bottom-20 left-1/2 transform -translate-x-1/2">
                     <img
-                      src={appearance.profileImage}
+                      src={profile.profile_picture_url}
                       alt="Profile"
                       className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-lg"
                     />
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            </div>
+            )}
 
             {/* Profile Info */}
             <div className="flex flex-col items-center space-y-2 px-4 sm:px-0 pt-8 sm:pt-10 md:pt-12">
@@ -150,83 +165,26 @@ END:VCARD`;
                 <h1
                   className="text-2xl sm:text-3xl md:text-4xl font-bold"
                   style={{
-                    color: appearance.textColor,
-                    fontFamily: appearance.fontFamily,
+                    color: themeSettings.text_color,
+                    fontFamily: themeSettings.font_family,
                   }}
                 >
-                  {appearance.title}
+                  {profile.title}
                 </h1>
-                {appearance.role && (
+                {profile.bio && (
                   <p
-                    className="text-lg sm:text-xl md:text-2xl font-medium opacity-90"
+                    className="text-sm sm:text-base md:text-lg max-w-md mx-auto px-4"
                     style={{
-                      color: appearance.textColor,
-                      fontFamily: appearance.fontFamily,
+                      color: themeSettings.text_color,
+                      opacity: 0.9,
+                      fontFamily: themeSettings.font_family,
                     }}
                   >
-                    {appearance.role}
+                    {profile.bio}
                   </p>
                 )}
-                {appearance.company && (
-                  <p
-                    className="text-base sm:text-lg md:text-xl opacity-75"
-                    style={{
-                      color: appearance.textColor,
-                      fontFamily: appearance.fontFamily,
-                    }}
-                  >
-                    {appearance.company}
-                  </p>
-                )}
-                <p
-                  className="text-sm sm:text-base md:text-lg max-w-md mx-auto px-4"
-                  style={{
-                    color: appearance.textColor,
-                    opacity: 0.9,
-                    fontFamily: appearance.fontFamily,
-                  }}
-                >
-                  {appearance.bio}
-                </p>
               </div>
             </div>
-
-            {/* Contact Info */}
-            {(contactData.email || contactData.phone || contactData.location) && (
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 px-4 sm:px-0">
-                {contactData.email && (
-                  <a
-                    href={`mailto:${contactData.email}`}
-                    className="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all text-sm sm:text-base"
-                    style={{ color: appearance.textColor }}
-                  >
-                    <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="hidden sm:inline">{contactData.email}</span>
-                    <span className="sm:hidden">Email</span>
-                  </a>
-                )}
-                {contactData.phone && (
-                  <a
-                    href={`tel:${contactData.phone}`}
-                    className="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all text-sm sm:text-base"
-                    style={{ color: appearance.textColor }}
-                  >
-                    <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span className="hidden sm:inline">{contactData.phone}</span>
-                    <span className="sm:hidden">Phone</span>
-                  </a>
-                )}
-                {contactData.location && (
-                  <div
-                    className="inline-flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2 bg-white/10 backdrop-blur-sm rounded-lg text-sm sm:text-base"
-                    style={{ color: appearance.textColor }}
-                  >
-                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
-                    <span>{contactData.location}</span>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* Action Buttons */}
             <div className="flex justify-center gap-4 px-4 sm:px-0">
@@ -235,8 +193,8 @@ END:VCARD`;
                 size="icon"
                 variant="outline"
                 className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
-                style={{ color: appearance.textColor }}
-                title="Guardar Contacto"
+                style={{ color: themeSettings.text_color }}
+                title="Save Contact"
               >
                 <Save className="h-5 w-5" />
               </Button>
@@ -245,8 +203,8 @@ END:VCARD`;
                 size="icon"
                 variant="outline"
                 className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
-                style={{ color: appearance.textColor }}
-                title="Compartir Perfil"
+                style={{ color: themeSettings.text_color }}
+                title="Share Profile"
               >
                 <Share className="h-5 w-5" />
               </Button>
@@ -254,42 +212,39 @@ END:VCARD`;
 
             {/* Links */}
             <div className="space-y-3 sm:space-y-4 px-4 sm:px-6 md:px-8">
-              {links
-                .filter((link) => link.isActive && link.title && link.url)
-                .map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full"
+              {links.map((link) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full"
+                >
+                  <Button
+                    className={`w-full justify-between gap-3 h-auto py-3 sm:py-4 px-4 sm:px-6 text-base sm:text-lg transition-all hover:scale-105 ${getButtonRadius()}`}
+                    style={{
+                      backgroundColor: themeSettings.button_bg_color,
+                      color: themeSettings.button_text_color,
+                      fontFamily: themeSettings.font_family,
+                      boxShadow: themeSettings.button_shadow
+                        ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+                        : "none",
+                    }}
                   >
-                    <Button
-                      className={`w-full justify-between gap-3 h-auto py-3 sm:py-4 px-4 sm:px-6 text-base sm:text-lg transition-all hover:scale-105 ${getButtonRadius()}`}
-                      style={{
-                        backgroundColor: appearance.buttonBgColor,
-                        color: appearance.buttonTextColor,
-                        fontFamily: appearance.fontFamily,
-                        boxShadow: appearance.buttonShadow
-                          ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-                          : "none",
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        {getIcon(link.icon)}
-                        <span className="font-medium">{link.title}</span>
-                      </div>
-                      <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                    </Button>
-                  </a>
-                ))}
+                    <div className="flex items-center gap-3">
+                      {getIcon(link.icon_class)}
+                      <span className="font-medium">{link.title}</span>
+                    </div>
+                    <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                  </Button>
+                </a>
+              ))}
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* Footer at the bottom of the page */}
+      {/* Footer */}
       <Footer />
     </div>
   );
