@@ -9,6 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useProfile } from "@/contexts/ProfileContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { passwordChangeSchema } from "@/lib/validations";
 
 const AccountTab = () => {
   const { toast } = useToast();
@@ -28,10 +29,22 @@ const AccountTab = () => {
   };
 
   const handleChangePassword = async () => {
-    if (passwordData.new !== passwordData.confirm) {
-      toast({ title: t("account.error"), description: t("account.passwordMismatch"), variant: "destructive" });
+    // Validate with zod schema
+    const result = passwordChangeSchema.safeParse({
+      currentPassword: passwordData.current,
+      newPassword: passwordData.new,
+      confirmPassword: passwordData.confirm
+    });
+    
+    if (!result.success) {
+      toast({ 
+        title: t("account.error"), 
+        description: result.error.errors[0].message, 
+        variant: "destructive" 
+      });
       return;
     }
+
     const { error } = await supabase.auth.updateUser({ password: passwordData.new });
     if (error) {
       toast({ title: t("account.error"), description: error.message, variant: "destructive" });

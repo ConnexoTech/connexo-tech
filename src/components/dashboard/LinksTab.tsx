@@ -9,6 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useProfile, Link } from "@/contexts/ProfileContext";
 import { useToast } from "@/hooks/use-toast";
 import IconPicker from "./IconPicker";
+import { linkSchema } from "@/lib/validations";
 
 const LinksTab = () => {
   const { t } = useLanguage();
@@ -62,13 +63,19 @@ END:VCARD`;
   };
 
   const saveChanges = async () => {
-    // Validate links
+    // Validate links with zod schema
     for (const link of localLinks) {
       if (link.title && link.url) {
-        if (!link.url.startsWith("http://") && !link.url.startsWith("https://")) {
+        const result = linkSchema.safeParse({
+          title: link.title,
+          url: link.url,
+          icon_class: link.icon_class
+        });
+        
+        if (!result.success) {
           toast({
             title: t("common.error"),
-            description: `Invalid URL for "${link.title}". URLs must start with http:// or https://`,
+            description: `${link.title}: ${result.error.errors[0].message}`,
             variant: "destructive",
           });
           return;

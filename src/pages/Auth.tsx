@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Footer } from "@/components/Footer";
 import logoFull from "@/assets/logo-full.png";
+import { signUpSchema, signInSchema } from "@/lib/validations";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -33,21 +34,12 @@ const Auth = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    // Basic client-side validation
-    if (!email || !password) {
+    // Validate with zod schema
+    const result = signUpSchema.safeParse({ email, password });
+    if (!result.success) {
       toast({
         title: t("common.error"),
-        description: "Email and password are required",
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 8) {
-      toast({
-        title: t("common.error"),
-        description: "Password must be at least 8 characters long",
+        description: result.error.errors[0].message,
         variant: "destructive",
       });
       setIsLoading(false);
@@ -81,10 +73,12 @@ const Auth = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    if (!email || !password) {
+    // Validate with zod schema
+    const result = signInSchema.safeParse({ email, password });
+    if (!result.success) {
       toast({
         title: t("common.error"),
-        description: "Email and password are required",
+        description: result.error.errors[0].message,
         variant: "destructive",
       });
       setIsLoading(false);
