@@ -84,20 +84,12 @@ const PhonePreview = ({ appearance }: PhonePreviewProps) => {
               >
                 {appearance.title}
               </h2>
-              {appearance.role && (
+              {(appearance.role || appearance.company) && (
                 <p
-                  className="text-base font-medium opacity-90"
+                  className="text-base opacity-90"
                   style={{ color: appearance.textColor }}
                 >
-                  {appearance.role}
-                </p>
-              )}
-              {appearance.company && (
-                <p
-                  className="text-sm opacity-75"
-                  style={{ color: appearance.textColor }}
-                >
-                  {appearance.company}
+                  {[appearance.role, appearance.company].filter(Boolean).join(' • ')}
                 </p>
               )}
               <p

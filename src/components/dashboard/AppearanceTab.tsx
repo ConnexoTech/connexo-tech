@@ -19,6 +19,7 @@ const AppearanceTab = () => {
   const { toast } = useToast();
 
   const [title, setTitle] = useState(profile?.title || "");
+  const [role, setRole] = useState(profile?.role || "");
   const [company, setCompany] = useState(profile?.company || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [profilePictureUrl, setProfilePictureUrl] = useState(profile?.profile_picture_url || "");
@@ -103,6 +104,7 @@ const AppearanceTab = () => {
   const saveChanges = async () => {
     const { error: profileError } = await updateProfile({ 
       title, 
+      role,
       company,
       bio,
       profile_picture_url: profilePictureUrl,
@@ -226,11 +228,21 @@ const AppearanceTab = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="title">Cargo</Label>
+            <Label htmlFor="title">Nombre</Label>
             <Input 
               id="title" 
               value={title} 
               onChange={(e) => setTitle(e.target.value)} 
+              placeholder="Ej: Juan Pérez"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="role">Cargo</Label>
+            <Input 
+              id="role" 
+              value={role} 
+              onChange={(e) => setRole(e.target.value)} 
               placeholder="Ej: CEO, Diseñador, Desarrollador"
             />
           </div>

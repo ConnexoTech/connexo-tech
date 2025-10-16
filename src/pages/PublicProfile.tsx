@@ -176,7 +176,7 @@ END:VCARD`;
               >
                 {profile.title}
               </h1>
-              {profile.company && (
+              {(profile.role || profile.company) && (
                 <p 
                   className="text-sm sm:text-base"
                   style={{
@@ -185,7 +185,7 @@ END:VCARD`;
                     fontFamily: themeSettings.font_family,
                   }}
                 >
-                  CEO • {profile.company}
+                  {[profile.role, profile.company].filter(Boolean).join(' • ')}
                 </p>
               )}
               {profile.bio && (

@@ -16,6 +16,7 @@ export interface ProfileData {
   id: string;
   username: string;
   title: string | null;
+  role: string | null;
   bio: string | null;
   profile_picture_url: string | null;
   cover_image_url: string | null;
