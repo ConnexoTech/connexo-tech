@@ -7,149 +7,70 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProfile } from "@/contexts/ProfileContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const AccountTab = () => {
   const { toast } = useToast();
   const { t } = useLanguage();
-  const { profile, updateUsername } = useProfile();
-  const [email, setEmail] = useState("you@example.com");
+  const { profile, updateProfile } = useProfile();
+  const { user } = useAuth();
+  const [username, setUsername] = useState(profile?.username || "");
+  const [passwordData, setPasswordData] = useState({ current: "", new: "", confirm: "" });
 
-  const [passwordData, setPasswordData] = useState({
-    current: "",
-    new: "",
-    confirm: "",
-  });
-
-  const handleUpdateProfile = () => {
-    updateUsername(profile.username);
-    toast({
-      title: t("account.profileUpdated"),
-      description: t("account.profileUpdatedDescription"),
-    });
+  const handleUpdateProfile = async () => {
+    const { error } = await updateProfile({ username });
+    if (error) {
+      toast({ title: t("account.error"), description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: t("account.profileUpdated"), description: t("account.profileUpdatedDescription") });
+    }
   };
 
-  const handleChangePassword = () => {
+  const handleChangePassword = async () => {
     if (passwordData.new !== passwordData.confirm) {
-      toast({
-        title: t("account.error"),
-        description: t("account.passwordMismatch"),
-        variant: "destructive",
-      });
+      toast({ title: t("account.error"), description: t("account.passwordMismatch"), variant: "destructive" });
       return;
     }
-
-    toast({
-      title: t("account.passwordChanged"),
-      description: t("account.passwordChangedDescription"),
-    });
-
-    setPasswordData({ current: "", new: "", confirm: "" });
+    const { error } = await supabase.auth.updateUser({ password: passwordData.new });
+    if (error) {
+      toast({ title: t("account.error"), description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: t("account.passwordChanged"), description: t("account.passwordChangedDescription") });
+      setPasswordData({ current: "", new: "", confirm: "" });
+    }
   };
 
+  if (!profile) return <div>Loading...</div>;
+
   return (
-    <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
-      {/* Profile Data */}
+    <div className="max-w-4xl mx-auto space-y-6">
       <Card>
-        <CardHeader className="px-4 sm:px-6">
-          <CardTitle className="text-lg sm:text-xl">{t("account.profileInfo")}</CardTitle>
-          <CardDescription className="text-sm">{t("account.updateAccountDetails")}</CardDescription>
+        <CardHeader>
+          <CardTitle>{t("account.profileInfo")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
+        <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="username">{t("account.username")}</Label>
-            <Input
-              id="username"
-              value={profile.username}
-              onChange={(e) => updateUsername(e.target.value)}
-            />
+            <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="email">{t("account.email")}</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <Label>{t("account.email")}</Label>
+            <Input value={user?.email || ""} disabled />
           </div>
-
-          <Button onClick={handleUpdateProfile} className="w-full sm:w-auto">{t("account.saveChanges")}</Button>
+          <Button onClick={handleUpdateProfile}>{t("account.saveChanges")}</Button>
         </CardContent>
       </Card>
 
-      {/* Password Change */}
       <Card>
-        <CardHeader className="px-4 sm:px-6">
-          <CardTitle className="text-lg sm:text-xl">{t("account.changePassword")}</CardTitle>
-          <CardDescription className="text-sm">{t("account.updatePassword")}</CardDescription>
+        <CardHeader>
+          <CardTitle>{t("account.changePassword")}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-          <div className="space-y-2">
-            <Label htmlFor="current-password">{t("account.currentPassword")}</Label>
-            <Input
-              id="current-password"
-              type="password"
-              value={passwordData.current}
-              onChange={(e) => setPasswordData({ ...passwordData, current: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="new-password">{t("account.newPassword")}</Label>
-            <Input
-              id="new-password"
-              type="password"
-              value={passwordData.new}
-              onChange={(e) => setPasswordData({ ...passwordData, new: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirm-password">{t("account.confirmPassword")}</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={passwordData.confirm}
-              onChange={(e) => setPasswordData({ ...passwordData, confirm: e.target.value })}
-            />
-          </div>
-
-          <Button onClick={handleChangePassword} className="w-full sm:w-auto">{t("account.updatePasswordButton")}</Button>
-        </CardContent>
-      </Card>
-
-      {/* Plan & Billing */}
-      <Card>
-        <CardHeader className="px-4 sm:px-6">
-          <CardTitle className="text-lg sm:text-xl">{t("account.planBilling")}</CardTitle>
-          <CardDescription className="text-sm">{t("account.manageSubscription")}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">{t("account.currentPlan")}</p>
-              <p className="text-sm text-muted-foreground">{t("account.free")}</p>
-            </div>
-            <Badge>{t("account.active")}</Badge>
-          </div>
-
-          <div className="space-y-2 pt-4 border-t border-border">
-            <Label htmlFor="custom-domain">{t("account.customDomain")}</Label>
-            <div className="flex gap-2">
-              <Input
-                id="custom-domain"
-                placeholder="yourdomain.com"
-                disabled
-              />
-              <Button variant="secondary" disabled>
-                {t("account.upgrade")}
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              {t("account.customDomainNote")}
-            </p>
-          </div>
+        <CardContent className="space-y-4">
+          <Input type="password" placeholder={t("account.currentPassword")} value={passwordData.current} onChange={(e) => setPasswordData({ ...passwordData, current: e.target.value })} />
+          <Input type="password" placeholder={t("account.newPassword")} value={passwordData.new} onChange={(e) => setPasswordData({ ...passwordData, new: e.target.value })} />
+          <Input type="password" placeholder={t("account.confirmPassword")} value={passwordData.confirm} onChange={(e) => setPasswordData({ ...passwordData, confirm: e.target.value })} />
+          <Button onClick={handleChangePassword}>{t("account.updatePasswordButton")}</Button>
         </CardContent>
       </Card>
     </div>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,84 +12,107 @@ import IconPicker from "./IconPicker";
 
 const LinksTab = () => {
   const { t } = useLanguage();
-  const { profile, updateLinks, updateContactData } = useProfile();
+  const { profile, links, updateProfile, updateLinks } = useProfile();
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Auto-save links when they change
-    const timer = setTimeout(() => {
-      updateLinks(profile.links);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [profile.links]);
-
-  useEffect(() => {
-    // Auto-save contact data when it changes
-    const timer = setTimeout(() => {
-      updateContactData(profile.contactData);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [profile.contactData]);
+  const [localLinks, setLocalLinks] = useState<Link[]>(links);
+  const [contactEmail, setContactEmail] = useState(profile?.contact_email || "");
+  const [contactPhone, setContactPhone] = useState(profile?.contact_phone || "");
+  const [contactLocation, setContactLocation] = useState(profile?.contact_location || "");
 
   const addLink = () => {
     const newLink: Link = {
-      id: Date.now().toString(),
+      id: `temp_${Date.now()}`,
       title: "",
       url: "",
-      icon: "link",
-      isActive: true,
+      icon_class: "link",
+      is_active: true,
+      display_order: localLinks.length,
     };
-    const newLinks = [...profile.links, newLink];
-    updateLinks(newLinks);
-    toast({
-      title: t("common.success"),
-      description: "Link added",
-    });
+    setLocalLinks([...localLinks, newLink]);
   };
 
-  const updateLink = (id: string, field: keyof Link, value: string | boolean) => {
-    const newLinks = profile.links.map(link => link.id === id ? { ...link, [field]: value } : link);
-    updateLinks(newLinks);
+  const updateLink = (id: string, field: keyof Link, value: string | boolean | number) => {
+    const newLinks = localLinks.map((link) =>
+      link.id === id ? { ...link, [field]: value } : link
+    );
+    setLocalLinks(newLinks);
   };
 
   const deleteLink = (id: string) => {
-    const newLinks = profile.links.filter(link => link.id !== id);
-    updateLinks(newLinks);
-    toast({
-      title: t("common.success"),
-      description: "Link deleted",
-    });
-  };
-
-  const handleContactChange = (field: keyof typeof profile.contactData, value: string) => {
-    updateContactData({ ...profile.contactData, [field]: value });
+    const newLinks = localLinks.filter((link) => link.id !== id);
+    setLocalLinks(newLinks);
   };
 
   const downloadVCard = () => {
     const vcard = `BEGIN:VCARD
 VERSION:3.0
-FN:${profile.appearance.title}
-EMAIL:${profile.contactData.email}
-TEL:${profile.contactData.phone}
-ADR:;;${profile.contactData.location};;;;
+FN:${profile?.title || ""}
+EMAIL:${contactEmail}
+TEL:${contactPhone}
+ADR:;;${contactLocation};;;;
 END:VCARD`;
-    
-    const blob = new Blob([vcard], { type: 'text/vcard' });
+
+    const blob = new Blob([vcard], { type: "text/vcard" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'contact.vcf';
+    a.download = "contact.vcf";
     a.click();
+    URL.revokeObjectURL(url);
   };
 
-  const saveChanges = () => {
-    updateLinks(profile.links);
-    updateContactData(profile.contactData);
+  const saveChanges = async () => {
+    // Validate links
+    for (const link of localLinks) {
+      if (link.title && link.url) {
+        if (!link.url.startsWith("http://") && !link.url.startsWith("https://")) {
+          toast({
+            title: t("common.error"),
+            description: `Invalid URL for "${link.title}". URLs must start with http:// or https://`,
+            variant: "destructive",
+          });
+          return;
+        }
+      }
+    }
+
+    // Update profile with contact data
+    const { error: profileError } = await updateProfile({
+      contact_email: contactEmail || null,
+      contact_phone: contactPhone || null,
+      contact_location: contactLocation || null,
+    });
+
+    if (profileError) {
+      toast({
+        title: t("common.error"),
+        description: "Failed to update contact information",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Update links
+    const { error: linksError } = await updateLinks(localLinks);
+
+    if (linksError) {
+      toast({
+        title: t("common.error"),
+        description: "Failed to update links",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: t("common.success"),
       description: "Changes saved successfully",
     });
   };
+
+  if (!profile) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
@@ -115,8 +138,8 @@ END:VCARD`;
                 id="email"
                 type="email"
                 placeholder="your@email.com"
-                value={profile.contactData.email}
-                onChange={(e) => handleContactChange("email", e.target.value)}
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -125,8 +148,8 @@ END:VCARD`;
                 id="phone"
                 type="tel"
                 placeholder="+1 234 567 8900"
-                value={profile.contactData.phone}
-                onChange={(e) => handleContactChange("phone", e.target.value)}
+                value={contactPhone}
+                onChange={(e) => setContactPhone(e.target.value)}
               />
             </div>
           </div>
@@ -135,8 +158,8 @@ END:VCARD`;
             <Input
               id="location"
               placeholder="Caracas, Venezuela"
-              value={profile.contactData.location}
-              onChange={(e) => handleContactChange("location", e.target.value)}
+              value={contactLocation}
+              onChange={(e) => setContactLocation(e.target.value)}
             />
           </div>
           <Button onClick={downloadVCard} variant="secondary" className="w-full sm:w-auto">
@@ -152,17 +175,17 @@ END:VCARD`;
           <CardDescription className="text-sm">{t("links.yourLinksDescription")}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3 sm:space-y-4 px-4 sm:px-6">
-          {profile.links.map((link) => (
+          {localLinks.map((link) => (
             <div key={link.id} className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-secondary rounded-lg">
               <div className="cursor-move mt-3 hidden sm:block">
                 <GripVertical className="h-5 w-5 text-muted-foreground" />
               </div>
-              
+
               <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
                 <div className="flex items-center gap-2">
                   <IconPicker
-                    value={link.icon}
-                    onChange={(icon) => updateLink(link.id, "icon", icon)}
+                    value={link.icon_class}
+                    onChange={(icon) => updateLink(link.id, "icon_class", icon)}
                   />
                   <Input
                     placeholder="Link Title"
@@ -179,8 +202,8 @@ END:VCARD`;
 
               <div className="flex items-center gap-1 sm:gap-2 mt-3 flex-shrink-0">
                 <Switch
-                  checked={link.isActive}
-                  onCheckedChange={(checked) => updateLink(link.id, "isActive", checked)}
+                  checked={link.is_active}
+                  onCheckedChange={(checked) => updateLink(link.id, "is_active", checked)}
                   className="scale-90 sm:scale-100"
                 />
                 <Button

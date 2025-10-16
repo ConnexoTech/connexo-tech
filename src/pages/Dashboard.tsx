@@ -26,7 +26,7 @@ const Dashboard = () => {
   };
 
   const viewPublicProfile = () => {
-    navigate(`/${profile.username}`);
+    navigate(`/${profile?.username || "profile"}`);
   };
 
   return (

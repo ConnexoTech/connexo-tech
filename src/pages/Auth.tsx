@@ -33,6 +33,27 @@ const Auth = () => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
+    // Basic client-side validation
+    if (!email || !password) {
+      toast({
+        title: t("common.error"),
+        description: "Email and password are required",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    if (password.length < 8) {
+      toast({
+        title: t("common.error"),
+        description: "Password must be at least 8 characters long",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     const { error } = await signUp(email, password);
 
     if (error) {
@@ -59,6 +80,16 @@ const Auth = () => {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+
+    if (!email || !password) {
+      toast({
+        title: t("common.error"),
+        description: "Email and password are required",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
 
     const { error } = await signIn(email, password);
 
@@ -160,7 +191,7 @@ const Auth = () => {
                         type="password"
                         placeholder="••••••••"
                         required
-                        minLength={6}
+                        minLength={8}
                         className="text-sm sm:text-base"
                       />
                     </div>
