@@ -4,6 +4,7 @@ import { usePublicProfile } from "@/hooks/usePublicProfile";
 import { useAuth } from "@/contexts/AuthContext";
 import { ExternalLink, Mail, Phone, MapPin, ArrowLeft, Save, Share } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Footer } from "@/components/Footer";
 import { useToast } from "@/hooks/use-toast";
 import * as LucideIcons from "lucide-react";
@@ -137,121 +138,124 @@ END:VCARD`;
 
       <div className="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
         <div className="w-full max-w-2xl">
-          <div className="space-y-6 sm:space-y-8">
-            {/* Cover Image with Profile Image Overlay */}
-            {profile.cover_image_url && (
-              <div className="relative w-full h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden">
+          {/* Profile Header */}
+          <div className="flex flex-col items-center text-center mb-6 sm:mb-8 w-full">
+            <div className="relative w-full mb-16 sm:mb-20 md:mb-24">
+              {/* Cover Image */}
+              <div className="w-full h-32 sm:h-48 overflow-hidden">
                 <img
-                  src={profile.cover_image_url}
-                  alt="Cover"
+                  src={profile.cover_image_url || "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800"}
+                  alt="Portada"
                   className="w-full h-full object-cover"
                 />
-                {/* Profile Image Overlay */}
-                {profile.profile_picture_url && (
-                  <div className="absolute -bottom-12 sm:-bottom-16 md:-bottom-20 left-1/2 transform -translate-x-1/2">
-                    <img
-                      src={profile.profile_picture_url}
-                      alt="Profile"
-                      className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-lg"
-                    />
-                  </div>
-                )}
               </div>
-            )}
+              
+              {/* Profile Picture Overlay */}
+              <div className="absolute -bottom-16 sm:-bottom-24 md:-bottom-28 left-1/2 -translate-x-1/2">
+                <Avatar className="profile-avatar w-32 h-32 sm:w-48 sm:h-48 md:w-56 md:h-56 border-4 border-background">
+                  <AvatarImage 
+                    src={profile.profile_picture_url} 
+                    alt={profile.title || "Profile"} 
+                    className="object-cover object-center"
+                  />
+                  <AvatarFallback className="text-4xl sm:text-6xl md:text-7xl">
+                    {profile.title?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+            </div>
 
             {/* Profile Info */}
-            <div className="flex flex-col items-center space-y-2 px-4 sm:px-0 pt-8 sm:pt-10 md:pt-12">
-              <div className="text-center space-y-2">
-                <h1
-                  className="text-2xl sm:text-3xl md:text-4xl font-bold"
+            <div className="space-y-1 sm:space-y-2">
+              <h1 
+                className="text-xl sm:text-2xl md:text-3xl font-bold"
+                style={{
+                  color: themeSettings.text_color,
+                  fontFamily: themeSettings.font_family,
+                }}
+              >
+                {profile.title}
+              </h1>
+              {profile.company && (
+                <p 
+                  className="text-sm sm:text-base"
                   style={{
                     color: themeSettings.text_color,
+                    opacity: 0.9,
                     fontFamily: themeSettings.font_family,
                   }}
                 >
-                  {profile.title}
-                </h1>
-                {profile.company && (
-                  <p
-                    className="text-base sm:text-lg md:text-xl font-medium"
-                    style={{
-                      color: themeSettings.text_color,
-                      opacity: 0.85,
-                      fontFamily: themeSettings.font_family,
-                    }}
-                  >
-                    {profile.company}
-                  </p>
-                )}
-                {profile.bio && (
-                  <p
-                    className="text-sm sm:text-base md:text-lg max-w-md mx-auto px-4"
-                    style={{
-                      color: themeSettings.text_color,
-                      opacity: 0.9,
-                      fontFamily: themeSettings.font_family,
-                    }}
-                  >
-                    {profile.bio}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex justify-center gap-4 px-4 sm:px-0">
-              <Button
-                onClick={downloadVCard}
-                size="icon"
-                variant="outline"
-                className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
-                style={{ color: themeSettings.text_color }}
-                title="Save Contact"
-              >
-                <Save className="h-5 w-5" />
-              </Button>
-              <Button
-                onClick={shareProfile}
-                size="icon"
-                variant="outline"
-                className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
-                style={{ color: themeSettings.text_color }}
-                title="Share Profile"
-              >
-                <Share className="h-5 w-5" />
-              </Button>
-            </div>
-
-            {/* Links */}
-            <div className="space-y-3 sm:space-y-4 px-4 sm:px-6 md:px-8">
-              {links.map((link) => (
-                <a
-                  key={link.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full"
+                  CEO • {profile.company}
+                </p>
+              )}
+              {profile.bio && (
+                <p 
+                  className="text-base sm:text-lg max-w-sm text-center px-2"
+                  style={{
+                    color: themeSettings.text_color,
+                    opacity: 0.8,
+                    fontFamily: themeSettings.font_family,
+                  }}
                 >
-                  <Button
-                    className={`w-full justify-between gap-3 h-auto py-3 sm:py-4 px-4 sm:px-6 text-base sm:text-lg transition-all hover:scale-105 ${getButtonRadius()}`}
-                    style={{
-                      backgroundColor: themeSettings.button_bg_color,
-                      color: themeSettings.button_text_color,
-                      fontFamily: themeSettings.font_family,
-                      boxShadow: themeSettings.button_shadow
-                        ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-                        : "none",
-                    }}
-                  >
-                    <div className="flex items-center gap-3">
-                      {getIcon(link.icon_class)}
-                      <span className="font-medium">{link.title}</span>
-                    </div>
-                    <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
-                  </Button>
-                </a>
-              ))}
+                  {profile.bio}
+                </p>
+              )}
             </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center gap-4 px-4 sm:px-0 mb-6">
+            <Button
+              onClick={downloadVCard}
+              size="icon"
+              variant="outline"
+              className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
+              style={{ color: themeSettings.text_color }}
+              title="Save Contact"
+            >
+              <Save className="h-5 w-5" />
+            </Button>
+            <Button
+              onClick={shareProfile}
+              size="icon"
+              variant="outline"
+              className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-sm border-white/20 hover:bg-white/20"
+              style={{ color: themeSettings.text_color }}
+              title="Share Profile"
+            >
+              <Share className="h-5 w-5" />
+            </Button>
+          </div>
+
+          {/* Links */}
+          <div className="space-y-3 sm:space-y-4 px-4 sm:px-6 md:px-8">
+            {links.map((link) => (
+              <a
+                key={link.id}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full"
+              >
+                <Button
+                  className={`w-full justify-between gap-3 h-auto py-3 sm:py-4 px-4 sm:px-6 text-base sm:text-lg transition-all hover:scale-105 ${getButtonRadius()}`}
+                  style={{
+                    backgroundColor: themeSettings.button_bg_color,
+                    color: themeSettings.button_text_color,
+                    fontFamily: themeSettings.font_family,
+                    boxShadow: themeSettings.button_shadow
+                      ? "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
+                      : "none",
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    {getIcon(link.icon_class)}
+                    <span className="font-medium">{link.title}</span>
+                  </div>
+                  <ExternalLink className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                </Button>
+              </a>
+            ))}
           </div>
         </div>
       </div>
