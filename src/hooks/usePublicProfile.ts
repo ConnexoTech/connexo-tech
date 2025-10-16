@@ -18,7 +18,7 @@ export const usePublicProfile = (username: string) => {
         // Fetch profile by username - only non-sensitive fields
         const { data: profileData, error: profileError } = await supabase
           .from("profiles")
-          .select("id, username, title, bio, profile_picture_url, cover_image_url")
+          .select("id, username, title, company, bio, profile_picture_url, cover_image_url")
           .eq("username", username)
           .single();
 

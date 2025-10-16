@@ -106,6 +106,7 @@ export type Database = {
       profiles: {
         Row: {
           bio: string | null
+          company: string | null
           contact_email: string | null
           contact_location: string | null
           contact_phone: string | null
@@ -121,6 +122,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          company?: string | null
           contact_email?: string | null
           contact_location?: string | null
           contact_phone?: string | null
@@ -136,6 +138,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          company?: string | null
           contact_email?: string | null
           contact_location?: string | null
           contact_phone?: string | null

@@ -171,6 +171,18 @@ END:VCARD`;
                 >
                   {profile.title}
                 </h1>
+                {profile.company && (
+                  <p
+                    className="text-base sm:text-lg md:text-xl font-medium"
+                    style={{
+                      color: themeSettings.text_color,
+                      opacity: 0.85,
+                      fontFamily: themeSettings.font_family,
+                    }}
+                  >
+                    {profile.company}
+                  </p>
+                )}
                 {profile.bio && (
                   <p
                     className="text-sm sm:text-base md:text-lg max-w-md mx-auto px-4"

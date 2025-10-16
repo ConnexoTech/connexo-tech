@@ -22,6 +22,7 @@ export interface ProfileData {
   contact_email: string | null;
   contact_phone: string | null;
   contact_location: string | null;
+  company: string | null;
 }
 
 export interface ThemeSettings {
