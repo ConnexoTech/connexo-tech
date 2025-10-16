@@ -1,0 +1,179 @@
+{
+  "nav": {
+    "getStarted": "Inizia",
+    "logout": "Esci"
+  },
+  "home": {
+    "hero": {
+      "title": "I Tuoi Link,",
+      "titleHighlight": "Elevati",
+      "subtitle": "La piattaforma premium di link-in-bio con potenti analisi e personalizzazione illimitata",
+      "createProfile": "Crea il Tuo Profilo"
+    },
+    "features": {
+      "visualEditor": {
+        "title": "Editor Visivo",
+        "description": "Personalizza ogni aspetto del tuo profilo con il nostro editor visivo intuitivo"
+      },
+      "analytics": {
+        "title": "Analisi Potenti",
+        "description": "Traccia le tue prestazioni con informazioni dettagliate e metriche di coinvolgimento"
+      },
+      "fast": {
+        "title": "Velocissimo",
+        "description": "Le prestazioni ottimizzate garantiscono che il tuo profilo si carichi istantaneamente"
+      }
+    }
+  },
+  "auth": {
+    "login": "Accedi",
+    "signup": "Registrati",
+    "welcomeBack": "Bentornato",
+    "welcomeDescription": "Inserisci le tue credenziali per accedere al tuo account",
+    "createAccount": "Crea il tuo account",
+    "createAccountDescription": "Inizia con il tuo profilo gratuito Connexo",
+    "email": "Email",
+    "password": "Password",
+    "username": "Nome utente",
+    "loggingIn": "Accesso in corso...",
+    "logIn": "Accedi",
+    "creatingAccount": "Creazione account...",
+    "createAccountButton": "Crea account",
+    "accountCreated": "Account creato!",
+    "welcomeMessage": "Benvenuto su Connexo, {username}!",
+    "welcomeBackMessage": "Bentornato!",
+    "successLogin": "Accesso effettuato con successo."
+  },
+  "dashboard": {
+    "title": "Connexo",
+    "tabs": {
+      "links": "Link",
+      "appearance": "Aspetto",
+      "analytics": "Analisi",
+      "account": "Account"
+    }
+  },
+  "links": {
+    "title": "Gestisci i Tuoi Link",
+    "description": "Aggiungi, modifica e organizza i tuoi link",
+    "addLink": "Aggiungi Link",
+    "linkTitle": "Titolo",
+    "linkUrl": "URL",
+    "linkIcon": "Icona",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "dragToReorder": "Trascina per riordinare i tuoi link",
+    "contactInfo": "Informazioni di Contatto",
+    "contactDescription": "Aggiungi i tuoi dati di contatto per farli apparire sul tuo profilo",
+    "phone": "Telefono",
+    "location": "Posizione",
+    "downloadVCard": "Scarica vCard",
+    "yourLinks": "I Tuoi Link",
+    "yourLinksDescription": "Aggiungi e gestisci i link del tuo profilo"
+  },
+  "appearance": {
+    "title": "Personalizza il Tuo Aspetto",
+    "description": "Progetta l'aspetto del tuo profilo",
+    "profile": "Profilo",
+    "profileDescription": "Personalizza l'aspetto del tuo profilo",
+    "profilePicture": "Foto Profilo",
+    "coverImage": "Immagine di Copertina",
+    "upload": "Carica",
+    "titleLabel": "Titolo",
+    "role": "Ruolo",
+    "company": "Azienda",
+    "bio": "Biografia",
+    "background": "Sfondo",
+    "backgroundType": "Tipo",
+    "solidColor": "Colore Solido",
+    "image": "Immagine",
+    "color": "Colore",
+    "backgroundImage": "Immagine di Sfondo",
+    "uploadImage": "Carica Immagine",
+    "buttonStyle": "Stile del Pulsante",
+    "style": "Stile",
+    "rectangular": "Rettangolare",
+    "rounded": "Arrotondato",
+    "pill": "Pillola",
+    "buttonBackground": "Sfondo",
+    "buttonTextColor": "Colore del Testo",
+    "typography": "Tipografia",
+    "fontFamily": "Famiglia di Font",
+    "textColor": "Colore del Testo"
+  },
+  "analytics": {
+    "title": "Informazioni Analitiche",
+    "description": "Traccia le prestazioni del tuo profilo",
+    "totalViews": "Visualizzazioni Totali",
+    "totalClicks": "Clic Totali",
+    "clickRate": "Tasso di Clic",
+    "profileVisits": "Visite al profilo in questo periodo",
+    "linkClicks": "Clic sui link in questo periodo",
+    "averageCTR": "CTR medio",
+    "performanceOverview": "Panoramica delle Prestazioni",
+    "viewsClicksOverTime": "Visualizzazioni e clic nel tempo",
+    "linkPerformance": "Prestazioni dei Link",
+    "clickBreakdown": "Ripartizione dei clic per link",
+    "clicks": "clic",
+    "views": "visualizzazioni",
+    "last7Days": "Ultimi 7 giorni",
+    "last30Days": "Ultimi 30 giorni",
+    "allTime": "Tutto il tempo"
+  },
+  "account": {
+    "title": "Impostazioni Account",
+    "description": "Gestisci le informazioni del tuo account",
+    "profileInfo": "Informazioni Profilo",
+    "updateAccountDetails": "Aggiorna i dettagli del tuo account",
+    "username": "Nome utente",
+    "email": "Email",
+    "saveChanges": "Salva Modifiche",
+    "changePassword": "Cambia Password",
+    "updatePassword": "Aggiorna la password del tuo account",
+    "currentPassword": "Password Attuale",
+    "newPassword": "Nuova Password",
+    "confirmPassword": "Conferma Nuova Password",
+    "updatePasswordButton": "Aggiorna Password",
+    "planBilling": "Piano e Fatturazione",
+    "manageSubscription": "Gestisci il tuo abbonamento",
+    "currentPlan": "Piano Attuale",
+    "free": "Gratuito",
+    "active": "Attivo",
+    "customDomain": "Dominio Personalizzato",
+    "upgrade": "Aggiorna",
+    "customDomainNote": "I domini personalizzati sono disponibili nei piani premium",
+    "profileUpdated": "Profilo aggiornato",
+    "profileUpdatedDescription": "Le informazioni del tuo profilo sono state salvate.",
+    "passwordChanged": "Password cambiata",
+    "passwordChangedDescription": "La tua password è stata aggiornata con successo.",
+    "error": "Errore",
+    "passwordMismatch": "Le nuove password non corrispondono."
+  },
+  "common": {
+    "loading": "Caricamento...",
+    "error": "Errore",
+    "success": "Successo",
+    "confirm": "Conferma",
+    "cancel": "Annulla",
+    "save": "Salva",
+    "poweredBy": "Powered by",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "search": "Cerca",
+    "filter": "Filtra",
+    "sort": "Ordina",
+    "language": "Lingua"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "it": "Italiano",
+    "fr": "Français"
+  }
+}

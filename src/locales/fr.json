@@ -1,0 +1,179 @@
+{
+  "nav": {
+    "getStarted": "Commencer",
+    "logout": "Déconnexion"
+  },
+  "home": {
+    "hero": {
+      "title": "Vos Liens,",
+      "titleHighlight": "Élevés",
+      "subtitle": "La plateforme premium de lien-en-bio avec des analyses puissantes et une personnalisation illimitée",
+      "createProfile": "Créez Votre Profil"
+    },
+    "features": {
+      "visualEditor": {
+        "title": "Éditeur Visuel",
+        "description": "Personnalisez chaque aspect de votre profil avec notre éditeur visuel intuitif"
+      },
+      "analytics": {
+        "title": "Analyses Puissantes",
+        "description": "Suivez vos performances avec des informations détaillées et des métriques d'engagement"
+      },
+      "fast": {
+        "title": "Ultra Rapide",
+        "description": "Les performances optimisées garantissent que votre profil se charge instantanément"
+      }
+    }
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "welcomeBack": "Bon retour",
+    "welcomeDescription": "Entrez vos identifiants pour accéder à votre compte",
+    "createAccount": "Créez votre compte",
+    "createAccountDescription": "Commencez avec votre profil Connexo gratuit",
+    "email": "Email",
+    "password": "Mot de passe",
+    "username": "Nom d'utilisateur",
+    "loggingIn": "Connexion en cours...",
+    "logIn": "Se connecter",
+    "creatingAccount": "Création du compte...",
+    "createAccountButton": "Créer un compte",
+    "accountCreated": "Compte créé!",
+    "welcomeMessage": "Bienvenue sur Connexo, {username}!",
+    "welcomeBackMessage": "Bon retour!",
+    "successLogin": "Connexion réussie."
+  },
+  "dashboard": {
+    "title": "Connexo",
+    "tabs": {
+      "links": "Liens",
+      "appearance": "Apparence",
+      "analytics": "Analyses",
+      "account": "Compte"
+    }
+  },
+  "links": {
+    "title": "Gérez Vos Liens",
+    "description": "Ajoutez, modifiez et organisez vos liens",
+    "addLink": "Ajouter un Lien",
+    "linkTitle": "Titre",
+    "linkUrl": "URL",
+    "linkIcon": "Icône",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "dragToReorder": "Faites glisser pour réorganiser vos liens",
+    "contactInfo": "Informations de Contact",
+    "contactDescription": "Ajoutez vos coordonnées pour qu'elles apparaissent sur votre profil",
+    "phone": "Téléphone",
+    "location": "Localisation",
+    "downloadVCard": "Télécharger vCard",
+    "yourLinks": "Vos Liens",
+    "yourLinksDescription": "Ajoutez et gérez les liens de votre profil"
+  },
+  "appearance": {
+    "title": "Personnalisez Votre Apparence",
+    "description": "Concevez l'apparence de votre profil",
+    "profile": "Profil",
+    "profileDescription": "Personnalisez l'apparence de votre profil",
+    "profilePicture": "Photo de Profil",
+    "coverImage": "Image de Couverture",
+    "upload": "Télécharger",
+    "titleLabel": "Titre",
+    "role": "Rôle",
+    "company": "Entreprise",
+    "bio": "Biographie",
+    "background": "Arrière-plan",
+    "backgroundType": "Type",
+    "solidColor": "Couleur Unie",
+    "image": "Image",
+    "color": "Couleur",
+    "backgroundImage": "Image d'Arrière-plan",
+    "uploadImage": "Télécharger l'Image",
+    "buttonStyle": "Style de Bouton",
+    "style": "Style",
+    "rectangular": "Rectangulaire",
+    "rounded": "Arrondi",
+    "pill": "Pilule",
+    "buttonBackground": "Arrière-plan",
+    "buttonTextColor": "Couleur du Texte",
+    "typography": "Typographie",
+    "fontFamily": "Famille de Police",
+    "textColor": "Couleur du Texte"
+  },
+  "analytics": {
+    "title": "Informations Analytiques",
+    "description": "Suivez les performances de votre profil",
+    "totalViews": "Vues Totales",
+    "totalClicks": "Clics Totaux",
+    "clickRate": "Taux de Clics",
+    "profileVisits": "Visites de profil cette période",
+    "linkClicks": "Clics sur les liens cette période",
+    "averageCTR": "CTR moyen",
+    "performanceOverview": "Aperçu des Performances",
+    "viewsClicksOverTime": "Vues et clics dans le temps",
+    "linkPerformance": "Performance des Liens",
+    "clickBreakdown": "Répartition des clics par lien",
+    "clicks": "clics",
+    "views": "vues",
+    "last7Days": "7 derniers jours",
+    "last30Days": "30 derniers jours",
+    "allTime": "Tout le temps"
+  },
+  "account": {
+    "title": "Paramètres du Compte",
+    "description": "Gérez les informations de votre compte",
+    "profileInfo": "Informations du Profil",
+    "updateAccountDetails": "Mettez à jour les détails de votre compte",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "saveChanges": "Enregistrer les Modifications",
+    "changePassword": "Changer le Mot de Passe",
+    "updatePassword": "Mettez à jour le mot de passe de votre compte",
+    "currentPassword": "Mot de Passe Actuel",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmPassword": "Confirmer le Nouveau Mot de Passe",
+    "updatePasswordButton": "Mettre à Jour le Mot de Passe",
+    "planBilling": "Plan et Facturation",
+    "manageSubscription": "Gérez votre abonnement",
+    "currentPlan": "Plan Actuel",
+    "free": "Gratuit",
+    "active": "Actif",
+    "customDomain": "Domaine Personnalisé",
+    "upgrade": "Mettre à Niveau",
+    "customDomainNote": "Les domaines personnalisés sont disponibles dans les plans premium",
+    "profileUpdated": "Profil mis à jour",
+    "profileUpdatedDescription": "Les informations de votre profil ont été enregistrées.",
+    "passwordChanged": "Mot de passe modifié",
+    "passwordChangedDescription": "Votre mot de passe a été mis à jour avec succès.",
+    "error": "Erreur",
+    "passwordMismatch": "Les nouveaux mots de passe ne correspondent pas."
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "poweredBy": "Powered by",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "sort": "Trier",
+    "language": "Langue"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "it": "Italiano",
+    "fr": "Français"
+  }
+}

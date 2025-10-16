@@ -1,0 +1,179 @@
+{
+  "nav": {
+    "getStarted": "Get Started",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero": {
+      "title": "Your Links,",
+      "titleHighlight": "Elevated",
+      "subtitle": "The premium link-in-bio platform with powerful analytics and unlimited customization",
+      "createProfile": "Create Your Profile"
+    },
+    "features": {
+      "visualEditor": {
+        "title": "Visual Editor",
+        "description": "Customize every aspect of your profile with our intuitive visual editor"
+      },
+      "analytics": {
+        "title": "Powerful Analytics",
+        "description": "Track your performance with detailed insights and engagement metrics"
+      },
+      "fast": {
+        "title": "Lightning Fast",
+        "description": "Optimized performance ensures your profile loads instantly"
+      }
+    }
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "welcomeBack": "Welcome back",
+    "welcomeDescription": "Enter your credentials to access your account",
+    "createAccount": "Create your account",
+    "createAccountDescription": "Get started with your free Connexo profile",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "loggingIn": "Logging in...",
+    "logIn": "Log in",
+    "creatingAccount": "Creating account...",
+    "createAccountButton": "Create account",
+    "accountCreated": "Account created!",
+    "welcomeMessage": "Welcome to Connexo, {username}!",
+    "welcomeBackMessage": "Welcome back!",
+    "successLogin": "Successfully logged in."
+  },
+  "dashboard": {
+    "title": "Connexo",
+    "tabs": {
+      "links": "Links",
+      "appearance": "Appearance",
+      "analytics": "Analytics",
+      "account": "Account"
+    }
+  },
+  "links": {
+    "title": "Manage Your Links",
+    "description": "Add, edit and organize your links",
+    "addLink": "Add Link",
+    "linkTitle": "Title",
+    "linkUrl": "URL",
+    "linkIcon": "Icon",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "dragToReorder": "Drag to reorder your links",
+    "contactInfo": "Contact Information",
+    "contactDescription": "Add your contact details to appear on your profile",
+    "phone": "Phone",
+    "location": "Location",
+    "downloadVCard": "Download vCard",
+    "yourLinks": "Your Links",
+    "yourLinksDescription": "Add and manage your profile links"
+  },
+  "appearance": {
+    "title": "Customize Your Appearance",
+    "description": "Design the look of your profile",
+    "profile": "Profile",
+    "profileDescription": "Customize your profile appearance",
+    "profilePicture": "Profile Picture",
+    "coverImage": "Cover Image",
+    "upload": "Upload",
+    "titleLabel": "Title",
+    "role": "Role",
+    "company": "Company",
+    "bio": "Bio",
+    "background": "Background",
+    "backgroundType": "Type",
+    "solidColor": "Solid Color",
+    "image": "Image",
+    "color": "Color",
+    "backgroundImage": "Background Image",
+    "uploadImage": "Upload Image",
+    "buttonStyle": "Button Style",
+    "style": "Style",
+    "rectangular": "Rectangular",
+    "rounded": "Rounded",
+    "pill": "Pill",
+    "buttonBackground": "Background",
+    "buttonTextColor": "Text Color",
+    "typography": "Typography",
+    "fontFamily": "Font Family",
+    "textColor": "Text Color"
+  },
+  "analytics": {
+    "title": "Analytics Insights",
+    "description": "Track your profile's performance",
+    "totalViews": "Total Views",
+    "totalClicks": "Total Clicks",
+    "clickRate": "Click Rate",
+    "profileVisits": "Profile visits this period",
+    "linkClicks": "Link clicks this period",
+    "averageCTR": "Average CTR",
+    "performanceOverview": "Performance Overview",
+    "viewsClicksOverTime": "Views and clicks over time",
+    "linkPerformance": "Link Performance",
+    "clickBreakdown": "Click breakdown by link",
+    "clicks": "clicks",
+    "views": "views",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "allTime": "All time"
+  },
+  "account": {
+    "title": "Account Settings",
+    "description": "Manage your account information",
+    "profileInfo": "Profile Information",
+    "updateAccountDetails": "Update your account details",
+    "username": "Username",
+    "email": "Email",
+    "saveChanges": "Save Changes",
+    "changePassword": "Change Password",
+    "updatePassword": "Update your account password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "updatePasswordButton": "Update Password",
+    "planBilling": "Plan & Billing",
+    "manageSubscription": "Manage your subscription",
+    "currentPlan": "Current Plan",
+    "free": "Free",
+    "active": "Active",
+    "customDomain": "Custom Domain",
+    "upgrade": "Upgrade",
+    "customDomainNote": "Custom domains are available on premium plans",
+    "profileUpdated": "Profile updated",
+    "profileUpdatedDescription": "Your profile information has been saved.",
+    "passwordChanged": "Password changed",
+    "passwordChangedDescription": "Your password has been updated successfully.",
+    "error": "Error",
+    "passwordMismatch": "New passwords do not match."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "poweredBy": "Powered by",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "language": "Language"
+  },
+  "languages": {
+    "es": "Español",
+    "en": "English",
+    "it": "Italiano",
+    "fr": "Français"
+  }
+}
