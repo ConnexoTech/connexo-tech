@@ -15,7 +15,7 @@ import AccountTab from "@/components/dashboard/AccountTab";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("links");
+  const [activeTab, setActiveTab] = useState("appearance");
   const { t } = useLanguage();
   const { profile } = useProfile();
   const { signOut } = useAuth();
