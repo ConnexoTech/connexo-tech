@@ -9,7 +9,7 @@ export interface Link {
   url: string;
   icon_class: string;
   is_active: boolean;
-  display_order: number;
+  display_order: string; // Cambiado de number a string para coincidir con la tabla
 }
 
 export interface ProfileData {
@@ -21,7 +21,7 @@ export interface ProfileData {
   profile_picture_url: string | null;
   cover_image_url: string | null;
   contact_email: string | null;
-  contact_phone: string | null;
+  contact_phone: number | null; // Cambiado de string a string (ya era string, pero confirmando)
   contact_location: string | null;
   company: string | null;
 }
@@ -58,7 +58,7 @@ export const useProfileData = () => {
       try {
         // Fetch profile
         const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
+          .from("Perfiles")
           .select("*")
           .eq("user_id", user.id)
           .single();
@@ -68,7 +68,7 @@ export const useProfileData = () => {
 
         // Fetch theme settings
         const { data: themeData, error: themeError } = await supabase
-          .from("theme_settings")
+          .from("Theme")
           .select("*")
           .eq("profile_id", profileData.id)
           .single();
@@ -78,7 +78,7 @@ export const useProfileData = () => {
 
         // Fetch links
         const { data: linksData, error: linksError } = await supabase
-          .from("links")
+          .from("Links")
           .select("*")
           .eq("profile_id", profileData.id)
           .order("display_order", { ascending: true });
@@ -106,7 +106,7 @@ export const useProfileData = () => {
 
     try {
       const { error } = await supabase
-        .from("profiles")
+        .from("Perfiles")
         .update(updates)
         .eq("user_id", user.id);
 
@@ -125,7 +125,7 @@ export const useProfileData = () => {
 
     try {
       const { error } = await supabase
-        .from("theme_settings")
+        .from("Theme")
         .update(updates)
         .eq("profile_id", profile.id);
 
@@ -144,7 +144,7 @@ export const useProfileData = () => {
 
     try {
       // Delete all existing links
-      await supabase.from("links").delete().eq("profile_id", profile.id);
+      await supabase.from("Links").delete().eq("profile_id", profile.id);
 
       // Insert new links
       const linksToInsert = newLinks.map((link, index) => ({
@@ -153,10 +153,10 @@ export const useProfileData = () => {
         url: link.url,
         icon_class: link.icon_class,
         is_active: link.is_active,
-        display_order: index,
+        display_order: index.toString(),
       }));
 
-      const { error } = await supabase.from("links").insert(linksToInsert);
+      const { error } = await supabase.from("Links").insert(linksToInsert);
 
       if (error) throw error;
 

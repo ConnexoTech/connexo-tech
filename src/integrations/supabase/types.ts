@@ -14,150 +14,97 @@ export type Database = {
   }
   public: {
     Tables: {
-      analytics_events: {
-        Row: {
-          country_code: string | null
-          created_at: string | null
-          event_type: string
-          id: string
-          link_id: string | null
-          profile_id: string
-          referrer_url: string | null
-        }
-        Insert: {
-          country_code?: string | null
-          created_at?: string | null
-          event_type: string
-          id?: string
-          link_id?: string | null
-          profile_id: string
-          referrer_url?: string | null
-        }
-        Update: {
-          country_code?: string | null
-          created_at?: string | null
-          event_type?: string
-          id?: string
-          link_id?: string | null
-          profile_id?: string
-          referrer_url?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "analytics_events_link_id_fkey"
-            columns: ["link_id"]
-            isOneToOne: false
-            referencedRelation: "links"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "analytics_events_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      links: {
+      Links: {
         Row: {
           created_at: string | null
-          display_order: number
+          display_order: string | null
           icon_class: string | null
-          id: string
+          id: string | null
           is_active: boolean | null
-          profile_id: string
-          title: string
+          profile_id: string | null
+          title: string | null
           updated_at: string | null
-          url: string
+          url: string | null
         }
         Insert: {
           created_at?: string | null
-          display_order?: number
+          display_order?: string | null
           icon_class?: string | null
-          id?: string
+          id?: string | null
           is_active?: boolean | null
-          profile_id: string
-          title: string
+          profile_id?: string | null
+          title?: string | null
           updated_at?: string | null
-          url: string
+          url?: string | null
         }
         Update: {
           created_at?: string | null
-          display_order?: number
+          display_order?: string | null
           icon_class?: string | null
-          id?: string
+          id?: string | null
           is_active?: boolean | null
-          profile_id?: string
-          title?: string
+          profile_id?: string | null
+          title?: string | null
           updated_at?: string | null
-          url?: string
+          url?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "links_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
-      profiles: {
+      Perfiles: {
         Row: {
           bio: string | null
           company: string | null
           contact_email: string | null
           contact_location: string | null
-          contact_phone: string | null
+          contact_phone: number | null
           cover_image_url: string | null
           created_at: string | null
           custom_domain: string | null
-          id: string
+          id: string | null
           profile_picture_url: string | null
           role: string | null
           title: string | null
           updated_at: string | null
-          user_id: string
-          username: string
+          user_id: string | null
+          username: string | null
         }
         Insert: {
           bio?: string | null
           company?: string | null
           contact_email?: string | null
           contact_location?: string | null
-          contact_phone?: string | null
+          contact_phone?: number | null
           cover_image_url?: string | null
           created_at?: string | null
           custom_domain?: string | null
-          id?: string
+          id?: string | null
           profile_picture_url?: string | null
           role?: string | null
           title?: string | null
           updated_at?: string | null
-          user_id: string
-          username: string
+          user_id?: string | null
+          username?: string | null
         }
         Update: {
           bio?: string | null
           company?: string | null
           contact_email?: string | null
           contact_location?: string | null
-          contact_phone?: string | null
+          contact_phone?: number | null
           cover_image_url?: string | null
           created_at?: string | null
           custom_domain?: string | null
-          id?: string
+          id?: string | null
           profile_picture_url?: string | null
           role?: string | null
           title?: string | null
           updated_at?: string | null
-          user_id?: string
-          username?: string
+          user_id?: string | null
+          username?: string | null
         }
         Relationships: []
       }
-      theme_settings: {
+      Theme: {
         Row: {
           bg_color: string | null
           bg_image_url: string | null
@@ -168,8 +115,8 @@ export type Database = {
           button_text_color: string | null
           created_at: string | null
           font_family: string | null
-          id: string
-          profile_id: string
+          id: string | null
+          profile_id: string | null
           text_color: string | null
           updated_at: string | null
         }
@@ -183,8 +130,8 @@ export type Database = {
           button_text_color?: string | null
           created_at?: string | null
           font_family?: string | null
-          id?: string
-          profile_id: string
+          id?: string | null
+          profile_id?: string | null
           text_color?: string | null
           updated_at?: string | null
         }
@@ -198,30 +145,19 @@ export type Database = {
           button_text_color?: string | null
           created_at?: string | null
           font_family?: string | null
-          id?: string
-          profile_id?: string
+          id?: string | null
+          profile_id?: string | null
           text_color?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "theme_settings_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      is_profile_owner: {
-        Args: { profile_user_id: string }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
