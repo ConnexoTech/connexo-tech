@@ -9,7 +9,7 @@ export interface Link {
   url: string;
   icon_class: string;
   is_active: boolean;
-  display_order: string; // Cambiado de number a string para coincidir con la tabla
+  display_order: number;
 }
 
 export interface ProfileData {
@@ -61,7 +61,7 @@ export const useProfileData = () => {
 
         // Check if profile exists
         const { data: existingProfile, error: profileError } = await supabase
-          .from("Perfiles")
+          .from("profiles")
           .select("*")
           .eq("user_id", user.id)
           .single();
@@ -73,7 +73,7 @@ export const useProfileData = () => {
         if (!existingProfile) {
           // Create profile if it doesn't exist
           const { data: newProfile, error: createError } = await supabase
-            .from("Perfiles")
+            .from("profiles")
             .insert({
               user_id: user.id,
               username: user.email?.split('@')[0] || 'user',
@@ -92,7 +92,7 @@ export const useProfileData = () => {
         // Fetch theme settings
         if (existingProfile) {
           const { data: themeData, error: themeError } = await supabase
-            .from("Theme")
+            .from("theme_settings")
             .select("*")
             .eq("profile_id", existingProfile.id)
             .single();
@@ -104,7 +104,7 @@ export const useProfileData = () => {
         // Fetch links
         if (existingProfile) {
           const { data: linksData, error: linksError } = await supabase
-            .from("Links")
+            .from("links")
             .select("*")
             .eq("profile_id", existingProfile.id)
             .order("display_order", { ascending: true });
@@ -134,7 +134,7 @@ export const useProfileData = () => {
       if (authError || !user) return { error: new Error("Not authenticated") };
 
       const { error } = await supabase
-        .from("Perfiles")
+        .from("profiles")
         .update(updates)
         .eq("user_id", user.id);
 
@@ -156,7 +156,7 @@ export const useProfileData = () => {
       if (!profile) return { error: new Error("No profile") };
 
       const { error } = await supabase
-        .from("Theme")
+        .from("theme_settings")
         .update(updates)
         .eq("profile_id", profile.id);
 
@@ -178,7 +178,7 @@ export const useProfileData = () => {
       if (!profile) return { error: new Error("No profile") };
 
       // Delete all existing links
-      await supabase.from("Links").delete().eq("profile_id", profile.id);
+      await supabase.from("links").delete().eq("profile_id", profile.id);
 
       // Insert new links
       const linksToInsert = newLinks.map((link, index) => ({
@@ -187,10 +187,10 @@ export const useProfileData = () => {
         url: link.url,
         icon_class: link.icon_class,
         is_active: link.is_active,
-        display_order: index.toString(),
+        display_order: index,
       }));
 
-      const { error } = await supabase.from("Links").insert(linksToInsert);
+      const { error } = await supabase.from("links").insert(linksToInsert);
 
       if (error) throw error;
 

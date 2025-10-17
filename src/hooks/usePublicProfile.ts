@@ -17,7 +17,7 @@ export const usePublicProfile = (username: string) => {
 
         // Fetch profile by username - only non-sensitive fields
         const { data: profileData, error: profileError } = await supabase
-          .from("Perfiles")
+          .from("profiles")
           .select("id, username, title, role, company, bio, profile_picture_url, cover_image_url")
           .eq("username", username)
           .single();
@@ -35,7 +35,7 @@ export const usePublicProfile = (username: string) => {
 
         // Fetch theme settings
         const { data: themeData, error: themeError } = await supabase
-          .from("Theme")
+          .from("theme_settings")
           .select("*")
           .eq("profile_id", profileData.id)
           .single();
@@ -45,7 +45,7 @@ export const usePublicProfile = (username: string) => {
 
         // Fetch active links only
         const { data: linksData, error: linksError } = await supabase
-          .from("Links")
+          .from("links")
           .select("*")
           .eq("profile_id", profileData.id)
           .eq("is_active", true)

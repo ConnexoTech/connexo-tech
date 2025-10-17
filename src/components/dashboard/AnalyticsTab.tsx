@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-type Link = Tables<"Links">;
+type Link = Tables<"links">;
 
 const AnalyticsTab = () => {
   const { t } = useLanguage();
@@ -17,7 +17,7 @@ const AnalyticsTab = () => {
   useEffect(() => {
     const fetchLinks = async () => {
       const { data, error } = await supabase
-        .from("Links")
+        .from("links")
         .select("*")
         .eq("is_active", true);
 
@@ -33,7 +33,7 @@ const AnalyticsTab = () => {
   }, []);
 
   // Calcular estadísticas basadas en datos reales (asumiendo que cada link tiene un campo para clicks, o usar conteo)
-  const totalClicks = links.reduce((sum, link) => sum + (link.display_order ? parseInt(link.display_order) : 0), 0); // Usar display_order como proxy para clicks por ahora
+  const totalClicks = links.reduce((sum, link) => sum + (link.display_order || 0), 0);
   const totalViews = totalClicks * 2; // Estimación: 2 vistas por click, ajustar según necesidad
   const ctr = totalViews > 0 ? ((totalClicks / totalViews) * 100).toFixed(1) : "0.0";
 
@@ -41,14 +41,14 @@ const AnalyticsTab = () => {
   const chartData = [
     { date: "Jan 1", views: Math.floor(totalViews * 0.1), clicks: Math.floor(totalClicks * 0.1) },
     { date: "Jan 2", views: Math.floor(totalViews * 0.12), clicks: Math.floor(totalClicks * 0.12) },
-    // Agregar más puntos según sea necesario
+    // Agregar más puntos según sea necesidad
   ];
 
   // Estadísticas por link (usar datos reales)
   const linkStats = links.map((link) => ({
     title: link.title || "Untitled",
-    clicks: parseInt(link.display_order || "0"),
-    percentage: totalClicks > 0 ? ((parseInt(link.display_order || "0") / totalClicks) * 100).toFixed(1) : "0"
+    clicks: link.display_order || 0,
+    percentage: totalClicks > 0 ? (((link.display_order || 0) / totalClicks) * 100).toFixed(1) : "0"
   }));
 
   if (loading) {
