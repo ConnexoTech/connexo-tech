@@ -15,18 +15,45 @@ export const usePublicProfile = (username: string) => {
         setLoading(true);
         setError(null);
 
-        // Fetch profile by username - only non-sensitive fields
-        const { data: profileData, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, username, title, role, company, bio, profile_picture_url, cover_image_url")
-          .eq("username", username)
-          .single();
+        const profileCandidates = ["profiles", "Perfiles"];
+        let profileData: any = null;
+        let lastProfileErr: any = null;
 
-        if (profileError) {
-          if (profileError.code === "PGRST116") {
-            setError("Profile not found");
+        for (const table of profileCandidates) {
+          const { data, error } = await supabase
+            .from(table as any)
+            .select("id, username, title, role, company, bio, profile_picture_url, cover_image_url")
+            .eq("username", username)
+            .maybeSingle();
+
+          if (error) {
+            if (
+              error.code === "PGRST205" ||
+              (typeof error.message === "string" &&
+                error.message.includes("Could not find the table"))
+            ) {
+              lastProfileErr = error;
+              continue;
+            }
+            // If no row found, keep data null and stop trying further
+            if (error.code === "PGRST116") {
+              lastProfileErr = error;
+              break;
+            }
+            lastProfileErr = error;
+            break;
           } else {
-            throw profileError;
+            profileData = data;
+            break;
+          }
+        }
+        if (!profileData) {
+          if (lastProfileErr?.code === "PGRST116") {
+            setError("Profile not found");
+          } else if (lastProfileErr) {
+            throw lastProfileErr;
+          } else {
+            setError("Profile not found");
           }
           return;
         }

@@ -59,31 +59,84 @@ export const useProfileData = () => {
           return;
         }
 
-        // Check if profile exists
-        const { data: existingProfile, error: profileError } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("user_id", user.id)
-          .single();
+        // Check if profile exists (with fallback for alternate table names)
+        const profileCandidates = ["profiles", "Perfiles"];
+        let existingProfile: any = null;
+        let profileTableUsed = "profiles";
+        let selectError: any = null;
 
-        if (profileError && profileError.code !== 'PGRST116') {
-          throw profileError;
+        for (const table of profileCandidates) {
+          const { data, error } = await supabase
+            .from(table as any)
+            .select("*")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          if (error) {
+            // Table not found in this schema - try next candidate
+            if (
+              error.code === "PGRST205" ||
+              (typeof error.message === "string" &&
+                error.message.includes("Could not find the table"))
+            ) {
+              continue;
+            }
+            // No row found is not an error - stop trying and keep as null
+            if (error.code === "PGRST116") {
+              profileTableUsed = table;
+              selectError = null;
+              break;
+            }
+            selectError = error;
+            break;
+          }
+
+          profileTableUsed = table;
+          existingProfile = data;
+          break;
         }
 
-        if (!existingProfile) {
-          // Create profile if it doesn't exist
-          const { data: newProfile, error: createError } = await supabase
-            .from("profiles")
-            .insert({
-              user_id: user.id,
-              username: user.email?.split('@')[0] || 'user',
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            })
-            .select()
-            .single();
+        if (selectError) {
+          throw selectError;
+        }
 
-          if (createError) throw createError;
+        // Error handling moved to fallback logic
+
+        if (!existingProfile) {
+          // Create profile if it doesn't exist (respecting table fallback)
+          let newProfile: any = null;
+          let lastCreateErr: any = null;
+          for (const table of profileCandidates) {
+            const { data, error } = await supabase
+              .from(table as any)
+              .insert({
+                user_id: user.id,
+                username: user.email?.split('@')[0] || 'user',
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              })
+              .select()
+              .maybeSingle();
+            if (error) {
+              if (
+                error.code === "PGRST205" ||
+                (typeof error.message === "string" &&
+                  error.message.includes("Could not find the table"))
+              ) {
+                lastCreateErr = error;
+                continue;
+              } else {
+                lastCreateErr = error;
+                break;
+              }
+            } else {
+              newProfile = data;
+              profileTableUsed = table;
+              break;
+            }
+          }
+
+          if (lastCreateErr && !newProfile) throw lastCreateErr;
           setProfile(newProfile);
         } else {
           setProfile(existingProfile);
