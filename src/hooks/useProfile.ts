@@ -49,42 +49,69 @@ export const useProfileData = () => {
 
   // Fetch profile data
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
     const fetchProfile = async () => {
       try {
-        // Fetch profile
-        const { data: profileData, error: profileError } = await supabase
+        // Get the current user from Supabase Auth
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+          console.log("No authenticated user");
+          setLoading(false);
+          return;
+        }
+
+        // Check if profile exists
+        const { data: existingProfile, error: profileError } = await supabase
           .from("Perfiles")
           .select("*")
           .eq("user_id", user.id)
           .single();
 
-        if (profileError) throw profileError;
-        setProfile(profileData);
+        if (profileError && profileError.code !== 'PGRST116') {
+          throw profileError;
+        }
+
+        if (!existingProfile) {
+          // Create profile if it doesn't exist
+          const { data: newProfile, error: createError } = await supabase
+            .from("Perfiles")
+            .insert({
+              user_id: user.id,
+              username: user.email?.split('@')[0] || 'user',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            })
+            .select()
+            .single();
+
+          if (createError) throw createError;
+          setProfile(newProfile);
+        } else {
+          setProfile(existingProfile);
+        }
 
         // Fetch theme settings
-        const { data: themeData, error: themeError } = await supabase
-          .from("Theme")
-          .select("*")
-          .eq("profile_id", profileData.id)
-          .single();
+        if (existingProfile) {
+          const { data: themeData, error: themeError } = await supabase
+            .from("Theme")
+            .select("*")
+            .eq("profile_id", existingProfile.id)
+            .single();
 
-        if (themeError) throw themeError;
-        setThemeSettings(themeData);
+          if (themeError && themeError.code !== 'PGRST116') throw themeError;
+          setThemeSettings(themeData);
+        }
 
         // Fetch links
-        const { data: linksData, error: linksError } = await supabase
-          .from("Links")
-          .select("*")
-          .eq("profile_id", profileData.id)
-          .order("display_order", { ascending: true });
+        if (existingProfile) {
+          const { data: linksData, error: linksError } = await supabase
+            .from("Links")
+            .select("*")
+            .eq("profile_id", existingProfile.id)
+            .order("display_order", { ascending: true });
 
-        if (linksError) throw linksError;
-        setLinks(linksData || []);
+          if (linksError) throw linksError;
+          setLinks(linksData || []);
+        }
       } catch (error: any) {
         console.error("Error fetching profile:", error);
         toast({
@@ -102,9 +129,10 @@ export const useProfileData = () => {
 
   // Update profile
   const updateProfile = async (updates: Partial<ProfileData>) => {
-    if (!user || !profile) return { error: new Error("Not authenticated") };
-
     try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) return { error: new Error("Not authenticated") };
+
       const { error } = await supabase
         .from("Perfiles")
         .update(updates)
@@ -112,7 +140,7 @@ export const useProfileData = () => {
 
       if (error) throw error;
 
-      setProfile({ ...profile, ...updates });
+      setProfile(prev => prev ? { ...prev, ...updates } : null);
       return { error: null };
     } catch (error: any) {
       return { error };
@@ -121,9 +149,12 @@ export const useProfileData = () => {
 
   // Update theme settings
   const updateTheme = async (updates: Partial<ThemeSettings>) => {
-    if (!user || !profile || !themeSettings) return { error: new Error("Not authenticated") };
-
     try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) return { error: new Error("Not authenticated") };
+
+      if (!profile) return { error: new Error("No profile") };
+
       const { error } = await supabase
         .from("Theme")
         .update(updates)
@@ -131,7 +162,7 @@ export const useProfileData = () => {
 
       if (error) throw error;
 
-      setThemeSettings({ ...themeSettings, ...updates });
+      setThemeSettings(prev => prev ? { ...prev, ...updates } : null);
       return { error: null };
     } catch (error: any) {
       return { error };
@@ -140,9 +171,12 @@ export const useProfileData = () => {
 
   // Update links
   const updateLinks = async (newLinks: Link[]) => {
-    if (!user || !profile) return { error: new Error("Not authenticated") };
-
     try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) return { error: new Error("Not authenticated") };
+
+      if (!profile) return { error: new Error("No profile") };
+
       // Delete all existing links
       await supabase.from("Links").delete().eq("profile_id", profile.id);
 
