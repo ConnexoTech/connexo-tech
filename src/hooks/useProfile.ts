@@ -21,7 +21,7 @@ export interface ProfileData {
   profile_picture_url: string | null;
   cover_image_url: string | null;
   contact_email: string | null;
-  contact_phone: number | null; // Cambiado de string a string (ya era string, pero confirmando)
+  contact_phone: string | null;
   contact_location: string | null;
   company: string | null;
 }

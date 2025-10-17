@@ -27,7 +27,7 @@ const LinksTab = () => {
       url: "",
       icon_class: "link",
       is_active: true,
-      display_order: localLinks.length,
+      display_order: localLinks.length.toString(),
     };
     setLocalLinks([...localLinks, newLink]);
   };
